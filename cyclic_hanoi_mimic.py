@@ -1,8 +1,23 @@
-from functools import lru_cache
-
 print("Starting calculating number of steps for Cyclic Hanoi")
 
-@lru_cache(maxsize=None)
+
+x2 = 0
+
+
+x19 = []
+x20 = []
+x21 = []
+
+
+
+
+
+
+
+
+
+
+
 def cw(n):
 	if n==0:
 		return 0
@@ -11,7 +26,6 @@ def cw(n):
 	else:
 		return 2*ccw(n-1) + 1
 
-@lru_cache(maxsize=None)
 def ccw(n):
 	if n==0:
 		return 0
@@ -20,7 +34,6 @@ def ccw(n):
 	else:
 		return 2*ccw(n-1) + cw(n-1) + 2
 
-@lru_cache(maxsize=None)
 def th(n):
 	print(2*ccw(n-1) + 1)
 

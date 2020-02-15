@@ -23,7 +23,7 @@
 
 // place disks n..1 on stack A
 
-        addi    x4, xzr, #10        // n = 10
+        addi    x4, xzr, #3        // n = 10
         add     x15, xzr, x4
 loop:   addi    x19, x19, #8
         stur    x15, [x19, #0]
@@ -40,6 +40,50 @@ chanoi:
 // Your code
 //
 ////////////////////////////////////
+	
+// store value of top most disk in x8
+	ldur x8,[x19, #0]
 
+//if no disk present return 0
+	subs xzr, x4, xzr
+	b.eq lr
+
+	addi x2, x2, #1
+// if 1 disk present return 1
+	subis xzr, x4, #1
+	b.eq lr
+	
+	eor x2, x2, x2
+
+//else call ccw on n-1 (9)
+	subi x4, x4, #1
+	bl ccw
+	muli x2, x2, #2
+	addi x2, x2, #1 
+	br lr
+
+//procedure for calculating ccw
+ccw:
+	subi sp, sp, #32
+	stur fp, [sp, #0]
+	addi fp, sp, #24
+	stur lr, [fp, #-16]
+	stur x4, [fp, #0]
+	
+	
+	subis xzr, x4, #1
+	b.eq ccw_ret_base
+	
+	
+
+	
+//procedure for calculating cw
+cw:
+
+
+ccw_ret_base:
+	addi x2, xzr, #2
+done:
+	
 error:  subi    x2, xzr, #1         // return -1 if error
         br      lr
