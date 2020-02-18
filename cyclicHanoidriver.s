@@ -36,9 +36,9 @@ loop:   addi    x19, x19, #8
 chanoi:
 
 ////////////////////////////////////
-//
-// Your code
-//
+//                                //
+//           Your code            //
+//                                //
 ////////////////////////////////////
 	
 // store value of top most disk in x8
@@ -64,25 +64,47 @@ chanoi:
 
 //procedure for calculating ccw
 ccw:
+	//allocate stack frame
 	subi sp, sp, #32
 	stur fp, [sp, #0]
 	addi fp, sp, #24
 	stur lr, [fp, #-16]
 	stur x4, [fp, #0]
 	
-	
+	//if n==1, return 2
 	subis xzr, x4, #1
 	b.eq ccw_ret_base
 	
+	//else return 2*ccw(n-1) + cw(n-1) + 2
+	b.gt ccw_ret_gt
 	
-
+cw: //question: should cw be stored in different register and then added on?
+	//if n==0, return 0
+	subis xzr, x4, #0
+	//b.eq 
 	
-//procedure for calculating cw
-cw:
-
-
+	//if n==1, return 1
+	subis xzr, x4, #1
+	//b.eq 
+	
+	//else return 2*ccw(n-1) +1
+	subi x4, x4, #1
+	bl ccw
+	mul x2, x2, #2
+	addi x2, x2, #1
+	
 ccw_ret_base:
 	addi x2, xzr, #2
+	subis xzr, x4, #1
+	b.le done
+	
+ccw_ret_gt: //needs to call cw on n-1
+	//call cww on n-1
+	subi x4, x4, #1
+	bl ccw
+	muli x2, x2, #2
+	addi x2, x2, #2
+	
 done:
 	
 error:  subi    x2, xzr, #1         // return -1 if error
