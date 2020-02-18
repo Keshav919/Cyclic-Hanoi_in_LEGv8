@@ -5,7 +5,7 @@
 //
 // return the number of steps in x2
 
-        eor     x2, x2, x2
+        eor     x2, x2, x2 //zero in x2
 
 // x19, x20, x21 are stack pointers for stacks A, B, C
 // stacks A, B, C grow upwards
@@ -48,19 +48,20 @@ chanoi:
 	subs xzr, x4, xzr
 	b.eq lr
 
-	addi x2, x2, #1
 // if 1 disk present return 1
+	addi x2, x2, #1
 	subis xzr, x4, #1
 	b.eq lr
 	
-	eor x2, x2, x2
+	eor x2, x2, x2 //zero in x2
 
-//else call ccw on n-1 (9)
+//else call ccw on n-1
 	subi x4, x4, #1
 	bl ccw
 	muli x2, x2, #2
 	addi x2, x2, #1 
-	br lr
+	//br lr
+	b done
 
 //procedure for calculating ccw
 ccw:
@@ -95,16 +96,17 @@ cw: //question: should cw be stored in different register and then added on?
 	
 ccw_ret_base:
 	addi x2, xzr, #2
-	//to fix: if n==1 from the start, needs to return 2 and not multiply nor add cw
+	br lr
 	
 ccw_ret_gt: //needs to call cw on n-1
 	//call cww on n-1
 	subis x4, x4, #1
-	b.ge ccw
+	bl ccw
+	bl cw
 	muli x2, x2, #2
 	addi x2, x2, #2
 	//add cw
-	
+	br lr
 done:
 	
 error:  subi    x2, xzr, #1         // return -1 if error
