@@ -77,36 +77,43 @@ ccw:
 	b.eq ccw_ret_base
 	
 	//else return 2*ccw(n-1) + cw(n-1) + 2
-	b.gt ccw_ret_gt
+	b ccw_ret_gt
 	
 cw: //question: should cw be stored in different register and then added on?
 	//if n==0, return 0
 	subis xzr, x4, #0
-	//b.eq 
+	b.eq lr 
 	
 	//if n==1, return 1
 	subis xzr, x4, #1
-	//b.eq 
+	b.eq cw_ret_base 
 	
-	//else return 2*ccw(n-1) +1
+	//else return 2*ccw(n-1) + 1
 	subi x4, x4, #1
 	bl ccw
 	mul x2, x2, #2
 	addi x2, x2, #1
+	br lr
 	
 ccw_ret_base:
 	addi x2, xzr, #2
 	br lr
 	
-ccw_ret_gt: //needs to call cw on n-1
+ccw_ret_gt:
 	//call cww on n-1
 	subis x4, x4, #1
 	bl ccw
+	//call cw on n-1
 	bl cw
 	muli x2, x2, #2
 	addi x2, x2, #2
-	//add cw
 	br lr
+
+cw_ret_base:
+	//return 1
+	
+	br lr
+
 done:
 	
 error:  subi    x2, xzr, #1         // return -1 if error
