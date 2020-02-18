@@ -95,15 +95,15 @@ cw: //question: should cw be stored in different register and then added on?
 	
 ccw_ret_base:
 	addi x2, xzr, #2
-	subis xzr, x4, #1
-	b.le done
+	//to fix: if n==1 from the start, needs to return 2 and not multiply nor add cw
 	
 ccw_ret_gt: //needs to call cw on n-1
 	//call cww on n-1
-	subi x4, x4, #1
-	bl ccw
+	subis x4, x4, #1
+	b.ge ccw
 	muli x2, x2, #2
 	addi x2, x2, #2
+	//add cw
 	
 done:
 	
