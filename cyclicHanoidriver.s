@@ -23,7 +23,7 @@
 
 // place disks n..1 on stack A
 
-        addi    x4, xzr, #3        // n = 10
+        addi    x4, xzr, #3        // n = 3
         add     x15, xzr, x4
 loop:   addi    x19, x19, #8
         stur    x15, [x19, #0]
@@ -41,8 +41,12 @@ chanoi:
 //                                //
 ////////////////////////////////////
 	
-// store value of top most disk in x8
-	ldur x8,[x19, #0]
+
+	subi sp, sp, #32
+	stur fp, [sp, #0]
+	addi fp, sp, #24
+	stur lr, [fp, #-16]
+	stur x4, [fp, #0]
 
 //if no disk present return 0
 	subs xzr, x4, xzr
@@ -53,15 +57,14 @@ chanoi:
 	subis xzr, x4, #1
 	b.eq lr
 	
-	eor x2, x2, x2 //zero in x2
-
 //else call ccw on n-1
+	eor x2, x2, x2 //zero in x2
 	subi x4, x4, #1
 	bl ccw
-	muli x2, x2, #2
+	add x2, x7, x7
 	addi x2, x2, #1 
-	//br lr
-	b done
+	ldur lr, [fp, #-16]
+	br lr
 
 //procedure for calculating ccw
 ccw:
@@ -77,11 +80,33 @@ ccw:
 	b.eq ccw_ret_base
 	
 	//else return 2*ccw(n-1) + cw(n-1) + 2
-	b ccw_ret_gt
 	
-cw: //question: should cw be stored in different register and then added on?
+	//call cww on n-1
+	subi x4, x4, #1
+	bl ccw
+	eor x8, x8, x8
+	add x8, x7, x7
+	//call cw on n-1
+	bl cw
+	add x8, x8, x9
+	addi x8, x8, #2
+	ldur x4, [fp, #0]
+	ldur lr, [fp, #-16]
+	ldur fp, [fp, #-24]
+	addi sp, sp, #32
+	add x7, xzr, x8
+	br lr
+	
+cw:
+	subi sp, sp, #32
+	stur fp, [sp, #0]
+	addi fp, sp, #24
+	stur lr, [fp, #-16]
+	stur x4, [fp, #0]
+ 
 	//if n==0, return 0
 	subis xzr, x4, #0
+	eor x7, x7, x7
 	b.eq lr 
 	
 	//if n==1, return 1
@@ -91,30 +116,26 @@ cw: //question: should cw be stored in different register and then added on?
 	//else return 2*ccw(n-1) + 1
 	subi x4, x4, #1
 	bl ccw
-	mul x2, x2, #2
-	addi x2, x2, #1
+	add x9, x7, x7
+	addi x9, x9, #1
+	ldur lr, [fp, #-16]
+	ldur fp, [fp, #-24]
 	br lr
 	
 ccw_ret_base:
-	addi x2, xzr, #2
+	addi x7, xzr, #2
+	ldur fp, [fp, #-24]
+	addi sp, sp, #32
 	br lr
 	
-ccw_ret_gt:
-	//call cww on n-1
-	subis x4, x4, #1
-	bl ccw
-	//call cw on n-1
-	bl cw
-	muli x2, x2, #2
-	addi x2, x2, #2
-	br lr
 
 cw_ret_base:
 	//return 1
-	
+	addi x9, xzr, #1
+	ldur fp, [fp, #-24]
+	addi sp, sp, #32
 	br lr
 
-done:
 	
 error:  subi    x2, xzr, #1         // return -1 if error
         br      lr
