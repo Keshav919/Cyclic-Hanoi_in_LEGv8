@@ -23,7 +23,7 @@
 
 // place disks n..1 on stack A
 
-        addi    x4, xzr, #3        // n = 3
+        addi    x4, xzr, #6        // n = 3
         add     x15, xzr, x4
 loop:   addi    x19, x19, #8
         stur    x15, [x19, #0]
@@ -84,16 +84,18 @@ ccw:
 	//call cww on n-1
 	subi x4, x4, #1
 	bl ccw
-	eor x8, x8, x8
 	add x8, x7, x7
+	
 	//call cw on n-1
+	
+	subi x4, x4, #1
 	bl cw
 	add x8, x8, x9
 	addi x8, x8, #2
-	ldur x4, [fp, #0]
 	ldur lr, [fp, #-16]
 	ldur fp, [fp, #-24]
 	addi sp, sp, #32
+	ldur x4, [fp, #0]
 	add x7, xzr, x8
 	br lr
 	
@@ -106,8 +108,8 @@ cw:
  
 	//if n==0, return 0
 	subis xzr, x4, #0
-	eor x7, x7, x7
-	b.eq lr 
+	eor x9, x9, x9
+	b.eq return
 	
 	//if n==1, return 1
 	subis xzr, x4, #1
@@ -120,20 +122,28 @@ cw:
 	addi x9, x9, #1
 	ldur lr, [fp, #-16]
 	ldur fp, [fp, #-24]
+	addi sp, sp, #32
+	ldur x4, [fp, #0]
 	br lr
 	
 ccw_ret_base:
 	addi x7, xzr, #2
+	ldur lr, [fp, #-16]
 	ldur fp, [fp, #-24]
 	addi sp, sp, #32
+	ldur x4, [fp, #0]
 	br lr
 	
+return:
+	br lr
 
 cw_ret_base:
 	//return 1
 	addi x9, xzr, #1
+	ldur lr, [fp, #-16]
 	ldur fp, [fp, #-24]
 	addi sp, sp, #32
+	ldur x4, [fp, #0]
 	br lr
 
 	

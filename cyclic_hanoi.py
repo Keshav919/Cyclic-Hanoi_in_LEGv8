@@ -25,6 +25,5 @@ def th(n):
 	print(2*ccw(n-1) + 1)
 
 
-th(5)
-
+th(6)
 
