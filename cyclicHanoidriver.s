@@ -113,6 +113,25 @@ ccw_ret_base:
 	ldur fp, [fp, #-24]
 	addi sp, sp, #32
 	ldur x4, [fp, #0]
+	
+	//moving disk from b to c stack
+	addi x20, x20, #8
+	ldur x5, [x20, #0]
+	stur x5, [x21, #8]
+	stur xzr, [x20,#0]
+
+	//moving disk from a to b stack
+	subi x19, x19, #8
+	ldur x5, [x19, #0]
+	stur x5, [x20, #0]
+	stur xzr, [x19, #0]
+
+	//moving disk from c to b
+	addi x21, x21, #8
+	ldur x5, [x21, #0]
+	stur x5, [x20, #8]
+	stur xzr, [x21, #0]
+
 	br lr
 	
 cw:
