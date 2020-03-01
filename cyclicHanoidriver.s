@@ -41,7 +41,6 @@ chanoi:
 //                                //
 ////////////////////////////////////
 	
-
 	subi sp, sp, #32
 	stur fp, [sp, #0]
 	addi fp, sp, #24
@@ -58,7 +57,7 @@ chanoi:
 	//branch to move_cw
 	b.eq return
 	
-//else call ccw on n-1
+// else call ccw on n-1
 	eor x2, x2, x2
 	subi x4, x4, #1
 	bl ccw
@@ -67,10 +66,12 @@ chanoi:
 	addi x2, x2, #1 
 	ldur lr, [fp, #-16]
 
+// storing source, destination, and temporary location of disks
 	eor x0, x0, x0 //src
 	addi x1, xzr, #1 //dst
 	addi x3, xzr, #2 //temp
 
+// stack for moving disks
 	subi sp, sp, #56
 	stur fp, [sp, #0]
 	addi fp, sp, #48
@@ -86,7 +87,8 @@ chanoi:
 
 move_ccw: //calls cw
 	
-	
+
+// moves disks in a clockwise direction
 move_cw: 
 	subi sp, sp, #56
 	stur fp, [sp, #0]
@@ -97,22 +99,24 @@ move_cw:
 	stur x0, [fp, #-16]	
 	stur x4, [fp, #0]
 
-	//check 
+	//check if 1 disk present
 	subis xzr, x4, #1
 	b.eq move_cw_base
 
-	subi x4, x4, #1
-	ldur x7, [fp, #-16]//src
+	subi x4, x4, #1 
+	ldur x7, [fp, #-16] //src
 
+	//check disks in src
 	subis xzr, x0, #0
-	//b.ne check_1
+	b.ne check_1
+	
 	eor x0, x0, x0
 	addi x1, xzr, #2
 	addi x3, xzr, #1
 
-check_1:
+check_1: 
 	subis xzr, x0, #1
-	//b.ne check_2
+	b.ne check_2
 	addi x0, x0, #1
 	addi x1, xzr, #0
 	addi x3, xzr, #2
