@@ -82,6 +82,7 @@ chanoi:
 	stur x4, [fp, #0]
 
 	bl move_cw
+	ldur lr, [fp, #-40]
 
 	br lr
 
@@ -96,25 +97,42 @@ move_ccw: //calls cw
         stur x4, [fp, #0]
 
 	subi x4, x4, #1
-	add x1, xzr, x3
+	add x1, x1, x3
+	sub x3, x1, x3
+	sub x1, x1, x3
 	cbnz x4, cont_ccw
 	addi x4, x4, #1	
 	bl move_cw
 	add x0, xzr, x1
 	ldur x1, [fp, #-24]
+	ldur x0, [fp, #-16]
 	bl move_cw
+
+	ldur lr, [fp, #-40]
+        ldur fp, [fp, #-48]
+        addi sp, sp, #56
+        ldur x4, [fp, #0]
+        br lr
 
 cont_ccw:
 	ldur x0, [fp, #-16]
 	ldur x1, [fp, #-24]
 	ldur x3, [fp, #-32]
 	
-	add x1, xzr, x3
+	add x1, x1, x3
+	add x1, x1, x3
+	sub x3, x1, x3
+	sub x1, x1, x3
 	bl move_cw
 	add x0, xzr, x1
 	ldur x1, [fp, #-24]
 	bl move_cw
 
+	ldur lr, [fp, #-40]
+        ldur fp, [fp, #-48]
+        addi sp, sp, #56
+        ldur x4, [fp, #0]
+        br lr
 	
 
 
@@ -203,9 +221,9 @@ move_ab:
 	addi x20, x20, #8
 	stur x10, [x20, #0]
 	
-	//ldur lr, [fp, #-40]
+	ldur lr, [fp, #-40]
         ldur fp, [fp, #-48]
-        addi sp, sp, #50
+        addi sp, sp, #56
         ldur x4, [fp, #0]
         br lr
 
@@ -219,9 +237,9 @@ move_bc:
 	addi x21, x21, #8
 	stur x10, [x21, #0]
 	
-	//ldur lr, [fp, #-40]
+	ldur lr, [fp, #-40]
         ldur fp, [fp, #-48]
-        addi sp, sp, #50
+        addi sp, sp, #56
         ldur x4, [fp, #0]
         br lr
 
@@ -233,9 +251,9 @@ move_ca:
 	addi x19, x19, #8
 	stur x10, [x19, #0]
 	
-	//ldur lr, [fp, #-40]
+	ldur lr, [fp, #-40]
         ldur fp, [fp, #-48]
-        addi sp, sp, #50
+        addi sp, sp, #56
         ldur x4, [fp, #0]
         br lr
 
