@@ -23,7 +23,7 @@
 
 // place disks n..1 on stack A
 
-        addi    x4, xzr, #10        // n = 3
+        addi    x4, xzr, #6        // n = 3
         add     x15, xzr, x4
 loop:   addi    x19, x19, #8
         stur    x15, [x19, #0]
@@ -54,8 +54,11 @@ chanoi:
 // if 1 disk present return 1
 	addi x2, x2, #1
 	subis xzr, x4, #1
+	eor x0, x0, x0 //src
+	addi x1, xzr, #1 //dst
+	addi x3, xzr, #2 //temp
 	//branch to move_cw
-	b.eq move_cw_base
+	b.eq move_cw
 	
 // else call ccw on n-1
 	eor x2, x2, x2
@@ -212,8 +215,6 @@ cont:
         ldur x4, [fp, #0]
 	br lr
 
-move_ccw_base:
-
 move_cw_base:
 
 	subis xzr, x0, #0
@@ -239,10 +240,13 @@ move_ab:
 	subi x19, x19, #8
 	addi x20, x20, #8
 	stur x10, [x20, #0]
+
+	//checking error
+	ldur x24, [x20, #0]
+	subs xzr, x10, x24
+	b.gt error
 	
         br lr
-
-	
 
 	//moving disk from b to c stack
 move_bc:
@@ -253,11 +257,17 @@ move_bc:
         addi sp, sp, #56
         ldur x4, [fp, #0]
 	b.eq return	
+
         stur xzr, [x20, #0]
 	subi x20, x20, #8
 	addi x21, x21, #8
 	stur x10, [x21, #0]
-	
+
+	//checking error
+	ldur x24, [x21, #0]
+	subs xzr, x10, x24
+	b.gt error
+
         br lr
 
 	//moving disk from c to b
@@ -269,11 +279,18 @@ move_ca:
         addi sp, sp, #56
         ldur x4, [fp, #0]
 	b.eq return	
+
         stur xzr, [x21, #0]
 	subi x21, x21, #8
 	addi x19, x19, #8
 	stur x10, [x19, #0]
 	
+	//check error
+	ldur x24, [x19, #0]
+	subs xzr, x10, x24
+	b.gt error
+
+
         br lr
 
 //procedure for calculating ccw
