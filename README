@@ -1,5 +1,16 @@
 Name: Keshav, Isabella 
-Email
-PID
+Email: krungta@ucsd.edu ilgomezt@ucsd.edu
+PID: A13819495 A15305555
 
-This will be our document that we use to explain our project and stuff
+This project is created to build a cyclic hanoi simulator in LEGv8. In this repo there are 3 files:
+- README
+- cyclicHanoiDriver.s
+- cyclic_Hanoi.py
+- cyclicHanoiDriverEC.s
+
+In the python file we wrote a quick pythong script that counts the number of moves it should take us to perform cyclic hanoi on n disks. We just need to enter the input n in the last line of the script
+
+In the .s file is the actual LEGvv8 code. There is a line commented as //n=3 where we add the value of n to x4. The script performs a count operation to determine the number of moves it should take one to perform cyclic hanoi and then actually performs the cyclic hanoi with a bunch of redundancy steps to show what it actually is without optimisation.
+
+In the cyclicHanoiEC.s file we commented out our code that does the simulation and just run the procedure for n=16. And it correctly counts the number of moves it would take. This is very fast!
+

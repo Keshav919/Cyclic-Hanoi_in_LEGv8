@@ -23,7 +23,7 @@
 
 // place disks n..1 on stack A
 
-        addi    x4, xzr, #10        // n = 3
+        addi    x4, xzr, #16        // n = 3
         add     x15, xzr, x4
 loop:   addi    x19, x19, #8
         stur    x15, [x19, #0]
@@ -84,7 +84,7 @@ chanoi:
 	stur x0, [fp, #-16]	
 	stur x4, [fp, #0]
 
-	bl move_cw
+	//bl move_cw
 	ldur lr, [fp, #-40]
 
 	br lr
