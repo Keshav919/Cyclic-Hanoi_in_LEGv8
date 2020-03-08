@@ -23,7 +23,7 @@
 
 // place disks n..1 on stack A
 
-        addi    x4, xzr, #2        // n = 3
+        addi    x4, xzr, #10        // n = 3
         add     x15, xzr, x4
 loop:   addi    x19, x19, #8
         stur    x15, [x19, #0]
@@ -102,10 +102,13 @@ move_ccw: //calls cw
 	sub x1, x1, x3
 	cbnz x4, cont_ccw
 	addi x4, x4, #1	
+	
 	bl move_cw
+	add x11, xzr, x0
 	add x0, xzr, x1
-	ldur x1, [fp, #-24]
-	ldur x0, [fp, #-16]
+	add x1, xzr, x3
+	add x3, xzr, x11
+		
 	bl move_cw
 
 	ldur lr, [fp, #-40]
@@ -118,14 +121,18 @@ cont_ccw:
 	ldur x0, [fp, #-16]
 	ldur x1, [fp, #-24]
 	ldur x3, [fp, #-32]
-	
-	add x1, x1, x3
+	addi x4, x4, #1	
 	add x1, x1, x3
 	sub x3, x1, x3
 	sub x1, x1, x3
 	bl move_cw
+
+	//ldur x4, [fp, #0]	
+	//subi x4, x4, #1
+	add x11, xzr, x0
 	add x0, xzr, x1
-	ldur x1, [fp, #-24]
+	add x1, xzr, x3
+	add x3, xzr, x11
 	bl move_cw
 
 	ldur lr, [fp, #-40]
@@ -167,7 +174,7 @@ move_cw:
 check_1: 
 	subis xzr, x0, #1
 	b.ne check_2
-	addi x0, x0, #1
+	addi x0, xzr, #1
 	addi x1, xzr, #0
 	addi x3, xzr, #2
 
@@ -182,10 +189,10 @@ cont:
 
 	bl move_ccw
 
-	//swapping x1 and x3
-	add x5, x1, x3
-	sub x1, x5, x1
-	sub x3, x5, x3
+	ldur x0, [fp, #-16]
+	ldur x1, [fp, #-24]
+	ldur x3, [fp, #-32]
+
 
 	addi x4, xzr, #1
 	bl move_cw
@@ -199,6 +206,11 @@ cont:
 	sub x0, x5, x0
 
 	bl move_ccw
+	ldur lr, [fp, #-40]
+        ldur fp, [fp, #-48]
+        addi sp, sp, #56
+        ldur x4, [fp, #0]
+	br lr
 
 move_ccw_base:
 
@@ -216,15 +228,18 @@ move_cw_base:
 	//moving disk from b to c stack
 move_ab:
         ldur x10, [x19, #0]
+	subis xzr, x10, #255
+	ldur lr, [fp, #-40]
+        ldur fp, [fp, #-48]
+        addi sp, sp, #56
+        ldur x4, [fp, #0]
+	b.eq return	
+
         stur xzr, [x19, #0]
 	subi x19, x19, #8
 	addi x20, x20, #8
 	stur x10, [x20, #0]
 	
-	ldur lr, [fp, #-40]
-        ldur fp, [fp, #-48]
-        addi sp, sp, #56
-        ldur x4, [fp, #0]
         br lr
 
 	
@@ -232,29 +247,33 @@ move_ab:
 	//moving disk from b to c stack
 move_bc:
         ldur x10, [x20, #0]
+	subis xzr, x10, #255
+	ldur lr, [fp, #-40]
+        ldur fp, [fp, #-48]
+        addi sp, sp, #56
+        ldur x4, [fp, #0]
+	b.eq return	
         stur xzr, [x20, #0]
 	subi x20, x20, #8
 	addi x21, x21, #8
 	stur x10, [x21, #0]
 	
-	ldur lr, [fp, #-40]
-        ldur fp, [fp, #-48]
-        addi sp, sp, #56
-        ldur x4, [fp, #0]
         br lr
 
 	//moving disk from c to b
 move_ca:
         ldur x10, [x21, #0]
+	subis xzr, x10, #255
+	ldur lr, [fp, #-40]
+        ldur fp, [fp, #-48]
+        addi sp, sp, #56
+        ldur x4, [fp, #0]
+	b.eq return	
         stur xzr, [x21, #0]
 	subi x21, x21, #8
 	addi x19, x19, #8
 	stur x10, [x19, #0]
 	
-	ldur lr, [fp, #-40]
-        ldur fp, [fp, #-48]
-        addi sp, sp, #56
-        ldur x4, [fp, #0]
         br lr
 
 //procedure for calculating ccw
