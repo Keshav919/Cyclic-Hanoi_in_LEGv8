@@ -87,7 +87,7 @@ chanoi:
 	stur x0, [fp, #-16]	
 	stur x4, [fp, #0]
 
-	bl move_cw
+	//bl move_cw
 	ldur lr, [fp, #-40]
 
 	br lr
@@ -169,7 +169,7 @@ cont_ccw:
 	add x3, xzr, x11
 	
 	//move clockwise second time
-	//bl move_cw
+	bl move_cw
 
 	//fix stack
 	ldur lr, [fp, #-40]
